@@ -1,4 +1,4 @@
-# pygame demo 3(a) - one image, move by keyboard
+# pygame demo 3(b) - one image, continuous mode, move as long as key is down
 
 # 1 - import packagegs
 import pygame
@@ -48,18 +48,18 @@ while True:
             pygame.quit()
             sys.exit()
 
-        # See if the user pressed a key
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                ballX = ballX - N_PIXELS_TO_MOVE
-            if event.key == pygame.K_RIGHT:
-                ballX = ballX + N_PIXELS_TO_MOVE
-            if event.key == pygame.K_UP:
-                ballY = ballY - N_PIXELS_TO_MOVE
-            if event.key == pygame.K_DOWN:
-                ballY = ballY + N_PIXELS_TO_MOVE
-
     # 8 - Do any "per frame" actions
+    # Check for user pressing keys
+    keysPressed = pygame.key.get_pressed()
+    if keysPressed[pygame.K_LEFT]:  # moving left
+        ballX = ballX - N_PIXELS_TO_MOVE
+    if keysPressed[pygame.K_RIGHT]:  # moving right
+        ballX = ballX + N_PIXELS_TO_MOVE
+    if keysPressed[pygame.K_UP]:  # moving up
+        ballY = ballY - N_PIXELS_TO_MOVE
+    if keysPressed[pygame.K_DOWN]:  # moving down
+        ballY = ballY + N_PIXELS_TO_MOVE
+
     # Check if the ball is colliding with the target
     ballRect = pygame.Rect(ballX, ballY, BALL_WIDTH_HEIGHT, BALL_WIDTH_HEIGHT)
     if ballRect.colliderect(targetRect):

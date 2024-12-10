@@ -1,4 +1,4 @@
-# pygame demo 2 - one image, click and move
+# pygame demo 4(b) - one image, bounce around the window using (x, y) coords
 
 # 1 - import packagegs
 import pygame
@@ -8,15 +8,10 @@ import random
 
 # 2 - Define constants
 BLACK = (0, 0, 0)
-
-FRAMES_PER_SECOND = 30
-
 WINDOW_WIDTH = 640
 WINDOW_HEIGHT = 480
-
-BALL_WIDTH_HEIGHT = 100
-MAX_WIDTH  = WINDOW_WIDTH - BALL_WIDTH_HEIGHT
-MAX_HEIGHT = WINDOW_HEIGHT - BALL_WIDTH_HEIGHT
+FRAMES_PER_SECOND = 30
+N_PIXELS_TO_MOVE = 3
 
 # 3 - initialize the world
 pygame.init()
@@ -27,10 +22,17 @@ clock = pygame.time.Clock()
 ballImage = pygame.image.load("images/ball.png")
 
 # 5 - Initialize variables
-ballX = random.randrange(MAX_WIDTH)
-ballY = random.randrange(MAX_HEIGHT)
+ballRect = ballImage.get_rect()
 
-ballRect = pygame.Rect(ballX, ballY, BALL_WIDTH_HEIGHT, BALL_WIDTH_HEIGHT)
+MAX_WIDTH = WINDOW_WIDTH - ballRect.width
+MAX_HEIGHT = WINDOW_HEIGHT - ballRect.height
+
+ballRect.left = random.randrange(MAX_WIDTH)
+ballRect.top = random.randrange(MAX_HEIGHT)
+
+xSpeed = N_PIXELS_TO_MOVE
+ySpeed = N_PIXELS_TO_MOVE
+
 
 # 6 - Loop forever
 while True:
@@ -42,26 +44,21 @@ while True:
             pygame.quit()
             sys.exit()
 
-        # See if the user clicked
-        if event.type == pygame.MOUSEBUTTONUP:
-            # Get the mouse position
-            # mouseX, mouseY = event.pos  # Could do this if we needed it
-
-            # Check if the click was in the rect of the ball
-            # If so, choose a random new location
-            if ballRect.collidepoint(event.pos):
-                ballX = random.randrange(MAX_WIDTH)
-                ballY = random.randrange(MAX_HEIGHT)
-                ballRect = pygame.Rect(ballX, ballY, BALL_WIDTH_HEIGHT, BALL_WIDTH_HEIGHT)
-
     # 8 - Do any "per frame" actions
+    if (ballRect.left < 0) or (ballRect.right >= WINDOW_WIDTH):
+        xSpeed = -xSpeed  # reverse X direction
+    if (ballRect.top < 0) or (ballRect.bottom >= WINDOW_HEIGHT):
+        ySpeed = -ySpeed  # reverse Y direction
+
+    # Update the ball's rectangle using the speed in two directions
+    ballRect.left = ballRect.left + xSpeed
+    ballRect.top = ballRect.top + ySpeed
     
     # 9 - Clear the window before drawing it again
     window.fill(BLACK)
 
     # 10 - Draw all window elements
-    # Draw the ball at the randomized location
-    window.blit(ballImage, (ballX, ballY))
+    window.blit(ballImage, ballRect)  # draw the ball
 
     # 11- Update hte window
     pygame.display.update()

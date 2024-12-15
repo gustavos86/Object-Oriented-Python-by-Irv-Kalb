@@ -22,8 +22,8 @@ clock = pygame.time.Clock()
 # 5 - Initialize variables
 # Create an instance of a SimpleButton
 oButton = SimpleButton(window, (150, 30),
-                             "images/buttonAUp.png",
-                             "images/buttonADown.png")
+                             "images/buttonUp.png",
+                             "images/buttonDown.png")
 
 # 6 - Loop forever
 while True:

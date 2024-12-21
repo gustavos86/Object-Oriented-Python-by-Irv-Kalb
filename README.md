@@ -1,6 +1,8 @@
 # Object-Oriented-Python-by-Irv-Kalb
 I am reading the book https://nostarch.com/object-oriented-python. I have created this repo to store the code created by following this book.
 
+![](ObjectOrientedPythonCover.jpg)
+
 ## To install pygame
 
 ```bash

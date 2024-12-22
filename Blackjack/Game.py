@@ -9,10 +9,8 @@ import pygame
 class Hand():
     CARD_OFFSET = 80
 
-    def __init__(self, window, x, y):
-        self.window = window
+    def __init__(self, x, y):
         self.cardsList = []
-
         self.x = x  # CARDS_LEFT = 75
         self.y = y  # CARDS_TOP = 350
 
@@ -32,15 +30,16 @@ class Hand():
         If the total does not exceed 21 points, then the Ace is worth 11 points.
         However, if holding an Ace causes you to exceed 21 points in total, its value is reduced to 1 point.
         """
-        aceFound = False
+        aceFound = 0
         score = 0
 
         for card in self.cardsList:
             if card.getRank() == "Ace":
-                aceFound = True
+                aceFound += 1
             score += card.getValue()
 
-        if aceFound and score > Game.BLACKJACK:
+        while aceFound and score > Game.BLACKJACK:
+            aceFound -= 1
             score -= 10
 
         return score
@@ -92,8 +91,8 @@ class Game():
         self.messageText.setValue("")
 
         # New hands for player and dealer
-        self.playerHand = Hand(self.window, Game.CARDS_LEFT, Game.CARDS_TOP)
-        self.dealerHand = Hand(self.window, Game.CARDS_LEFT, Game.CARDS_TOP-200)
+        self.playerHand = Hand(Game.CARDS_LEFT, Game.CARDS_TOP)
+        self.dealerHand = Hand(Game.CARDS_LEFT, Game.CARDS_TOP-200)
         
         # Get the dealer's Cards
         self.dealerHand.drawCard(self.oDeck, reveal=False)

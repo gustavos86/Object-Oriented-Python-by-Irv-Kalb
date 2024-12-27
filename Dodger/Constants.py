@@ -24,3 +24,6 @@ N_HIGH_SCORES = 10
 
 # Requests
 HIGH_SCORES_DATA = "high scores data"
+
+# Player
+N_LIVES = 3

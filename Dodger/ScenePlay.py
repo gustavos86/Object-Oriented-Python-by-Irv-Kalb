@@ -95,8 +95,10 @@ class ScenePlay(pyghelpers.Scene):
         pygame.mixer.music.load("sounds/background.mid")
         self.dingSound = pygame.mixer.Sound("sounds/ding.wav")
         self.gameOverSound = pygame.mixer.Sound("sounds/gameOver.wav")
+        self.playerWasHitSound = pygame.mixer.Sound("sounds/buzz.wav")
 
         self.oPlayer = Player(self.window)
+        self.oPlayer.setHitSound(self.playerWasHitSound)
         self.oBaddieMgr = BaddieMgr(self.window)
         self.oGoodieMgr = GoodieMgr(self.window)
 
@@ -165,6 +167,7 @@ class ScenePlay(pyghelpers.Scene):
         # Tell the managers to reset themselves
         self.oBaddieMgr.reset()
         self.oGoodieMgr.reset()
+        self.oPlayer.resetLives()
 
         if self.backgroundMusic:
             pygame.mixer.music.play(-1, 0.0)
@@ -212,6 +215,9 @@ class ScenePlay(pyghelpers.Scene):
 
         # Check if the Player had hit the Baddie
         if self.oBaddieMgr.hasPlayerHitBaddie(playerRect):
+            self.oPlayer.gotHit()  # player was hit by a Baddie
+
+        if self.oPlayer.hasPlayerlost():  # Player has lost
             pygame.mouse.set_visible(True)
             pygame.mixer.music.stop()
 

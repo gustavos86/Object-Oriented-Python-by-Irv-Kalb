@@ -27,8 +27,7 @@ window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 # Instantiate all scenes and store them in a list
 sceneList = [SceneSplash(window),
              SceneHighScores(window),
-             ScenePlay(window),
-            ]
+             ScenePlay(window)]
 
 # Create the scene manager, passing in the scenes list and the FPS
 oSceneMgr = pyghelpers.SceneMgr(sceneList, FRAMES_PER_SECOND)

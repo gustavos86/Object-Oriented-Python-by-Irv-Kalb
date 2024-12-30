@@ -100,3 +100,9 @@ class Player():
 
             self.state = Player.HIT_STATE
             self.hitStartTime = time.time()
+
+    def getLives(self):
+        if self.lives < 0:
+            return 0
+
+        return self.lives

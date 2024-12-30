@@ -76,11 +76,17 @@ class ScenePlay(pyghelpers.Scene):
                                               "images/gameOver.png")
         self.titleText = pygwidgets.DisplayText(self.window,
                                                 (70, GAME_HEIGHT + 17),
-                                                "Score:                                 High Score:",
+                                                "Score:             Lives:              High Score:",
                                                 fontSize=24,
                                                 textColor=WHITE)
         self.scoreText = pygwidgets.DisplayText(self.window,
                                                  (80, GAME_HEIGHT + 47),
+                                                 "0",
+                                                 fontSize=36,
+                                                 textColor=WHITE,
+                                                 justified="right")
+        self.livesText = pygwidgets.DisplayText(self.window,
+                                                 (180, GAME_HEIGHT + 47),
                                                  "0",
                                                  fontSize=36,
                                                  textColor=WHITE,
@@ -144,6 +150,7 @@ class ScenePlay(pyghelpers.Scene):
         self.controlsBackground.draw()
         self.titleText.draw()
         self.scoreText.draw()
+        self.livesText.draw()
         self.highScoreText.draw()
         self.soundCheckBox.draw()
         self.quitButton.draw()
@@ -168,6 +175,7 @@ class ScenePlay(pyghelpers.Scene):
         self.oBaddieMgr.reset()
         self.oGoodieMgr.reset()
         self.oPlayer.resetLives()
+        self.livesText.setValue(self.oPlayer.getLives())
 
         if self.backgroundMusic:
             pygame.mixer.music.play(-1, 0.0)
@@ -216,6 +224,7 @@ class ScenePlay(pyghelpers.Scene):
         # Check if the Player had hit the Baddie
         if self.oBaddieMgr.hasPlayerHitBaddie(playerRect):
             self.oPlayer.gotHit()  # player was hit by a Baddie
+            self.livesText.setValue(self.oPlayer.getLives())
 
         if self.oPlayer.hasPlayerlost():  # Player has lost
             pygame.mouse.set_visible(True)

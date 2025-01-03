@@ -76,35 +76,46 @@ class ScenePlay(pyghelpers.Scene):
                                               "images/gameOver.png")
         self.titleText = pygwidgets.DisplayText(self.window,
                                                 (70, GAME_HEIGHT + 17),
-                                                "Score:             Lives:              High Score:",
+                                                "Lives:       Bombs:       Score:       High Score:",
                                                 fontSize=24,
                                                 textColor=WHITE)
-        self.scoreText = pygwidgets.DisplayText(self.window,
+        self.livesText = pygwidgets.DisplayText(self.window,
                                                  (80, GAME_HEIGHT + 47),
                                                  "0",
                                                  fontSize=36,
                                                  textColor=WHITE,
                                                  justified="right")
-        self.livesText = pygwidgets.DisplayText(self.window,
-                                                 (180, GAME_HEIGHT + 47),
+        self.bombsText = pygwidgets.DisplayText(self.window,
+                                                 (160, GAME_HEIGHT + 47),
+                                                 "0",
+                                                 fontSize=36,
+                                                 textColor=WHITE,
+                                                 justified="right")
+        self.scoreText = pygwidgets.DisplayText(self.window,
+                                                 (235, GAME_HEIGHT + 47),
                                                  "0",
                                                  fontSize=36,
                                                  textColor=WHITE,
                                                  justified="right")
         self.highScoreText = pygwidgets.DisplayText(self.window,
-                                                    (270, GAME_HEIGHT + 47),
+                                                    (310, GAME_HEIGHT + 47),
                                                     "",
                                                     fontSize=36,
                                                     textColor=WHITE,
                                                     justified="right")
         
         pygame.mixer.music.load("sounds/background.mid")
+        pygame.mixer.music.set_volume(0.2)
         self.dingSound = pygame.mixer.Sound("sounds/ding.wav")
         self.gameOverSound = pygame.mixer.Sound("sounds/gameOver.wav")
-        self.playerWasHitSound = pygame.mixer.Sound("sounds/buzz.wav")
+        self.explosionSound = pygame.mixer.Sound("sounds/explosion.wav")
+        self.explosionSound.set_volume(1.0)
 
         self.oPlayer = Player(self.window)
-        self.oPlayer.setHitSound(self.playerWasHitSound)
+        self.oPlayer.hitSound = pygame.mixer.Sound("sounds/buzz.wav")
+        self.oPlayer.noBombsSound = pygame.mixer.Sound("sounds/no_bombs.wav")
+        self.oPlayer.noBombsSound.set_volume(0.2)
+
         self.oBaddieMgr = BaddieMgr(self.window)
         self.oGoodieMgr = GoodieMgr(self.window)
 
@@ -127,9 +138,15 @@ class ScenePlay(pyghelpers.Scene):
             for event in eventsList:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
-                        mouseX, mouseY = pygame.mouse.get_pos()
-                        playerX, playerY = self.oPlayer.normalizeLocationOnDisplay(mouseX, mouseY)
-                        self.oBaddieMgr.destroyAllBaddiesWithinDetonationArea(playerX, playerY)
+                        if self.oPlayer.bombs:
+                            self.explosionSound.play()
+                            mouseX, mouseY = pygame.mouse.get_pos()
+                            playerX, playerY = self.oPlayer.normalizeLocationOnDisplay(mouseX, mouseY)
+                            self.oBaddieMgr.destroyAllBaddiesWithinDetonationArea(playerX, playerY)
+                            self.oPlayer.bombs -= 1
+                            self.bombsText.setValue(self.oPlayer.bombs)
+                        else:
+                            self.oPlayer.noBombsSound.play()
 
         for event in eventsList:
             if self.startButton.handleEvent(event):
@@ -158,8 +175,9 @@ class ScenePlay(pyghelpers.Scene):
         # Draw all the info at the bottom of the window
         self.controlsBackground.draw()
         self.titleText.draw()
-        self.scoreText.draw()
         self.livesText.draw()
+        self.bombsText.draw()
+        self.scoreText.draw()
         self.highScoreText.draw()
         self.soundCheckBox.draw()
         self.quitButton.draw()
@@ -184,7 +202,8 @@ class ScenePlay(pyghelpers.Scene):
         self.oBaddieMgr.reset()
         self.oGoodieMgr.reset()
         self.oPlayer.resetLives()
-        self.livesText.setValue(self.oPlayer.getLives())
+        self.livesText.setValue(self.oPlayer.lives)
+        self.bombsText.setValue(self.oPlayer.bombs)
 
         if self.backgroundMusic:
             pygame.mixer.music.play(-1, 0.0)
@@ -233,7 +252,7 @@ class ScenePlay(pyghelpers.Scene):
         # Check if the Player had hit the Baddie
         if self.oBaddieMgr.hasPlayerHitBaddie(playerRect):
             self.oPlayer.gotHit()  # player was hit by a Baddie
-            self.livesText.setValue(self.oPlayer.getLives())
+            self.livesText.setValue(self.oPlayer.lives)
 
         if self.oPlayer.hasPlayerlost():  # Player has lost
             pygame.mouse.set_visible(True)

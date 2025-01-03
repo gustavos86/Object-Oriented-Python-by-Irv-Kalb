@@ -27,3 +27,4 @@ HIGH_SCORES_DATA = "high scores data"
 
 # Player
 N_LIVES = 3
+N_BOMBS = 3

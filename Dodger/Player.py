@@ -22,7 +22,7 @@ class Player():
         self.maxY = GAME_HEIGHT  - playerRect.height
 
         # Sound to play when player is hit
-        self.playerHitSound = None
+        self.hitSound = None
 
         # State of the Player
         self.state = Player.PLAYABLE_STATE
@@ -73,10 +73,44 @@ class Player():
 
     def resetLives(self):
         self.lives = N_LIVES
+        self.bombs = N_BOMBS
 
-    def setHitSound(self, hitSound):
-        assert type(hitSound) == PygameSound
-        self.playerHitSound = hitSound
+    @property
+    def lives(self):
+        return self._lives
+    
+    @lives.setter
+    def lives(self, number_of_lives):
+        self._lives = number_of_lives
+
+    @property
+    def bombs(self):
+        return self._bombs
+
+    @bombs.setter
+    def bombs(self, number_of_bombs):
+        self._bombs = number_of_bombs
+
+    @property
+    def hitSound(self):
+        return self._hitSound
+    
+    @hitSound.setter
+    def hitSound(self, hitSound):
+        if hitSound is None:
+            self._hitSound = None
+        elif not type(hitSound) == PygameSound:
+            raise Exception("Player: hitSound must be a PygameSound object")
+        self._hitSound = hitSound
+
+    @property
+    def noBombsSound(self):
+        return self._noBombsSound
+    
+    @noBombsSound.setter
+    def noBombsSound(self, noBombsSound):
+        assert type(noBombsSound) == PygameSound
+        self._noBombsSound = noBombsSound
 
     def hasPlayerlost(self):
         if self.lives < 0:
@@ -97,8 +131,8 @@ class Player():
         if self.state == Player.PLAYABLE_STATE:
             self.lives -= 1
 
-            if self.playerHitSound is not None:
-                self.playerHitSound.play()
+            if self.hitSound is not None:
+                self.hitSound.play()
 
             if self.hasPlayerlost():  # Don't blink after having lost
                 return

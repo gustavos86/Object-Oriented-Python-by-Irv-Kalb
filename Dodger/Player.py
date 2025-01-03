@@ -31,6 +31,18 @@ class Player():
         self.displayPlayer = True
         self.resetLives()  # reset lives to default
 
+    def normalizeLocationOnDisplay(self, x, y):
+        if x < 0:
+            x = 0
+        elif x > self.maxX:
+            x = self.maxX
+        elif y < 0:
+            y = 0
+        elif y > self.maxY:
+            y = self.maxY
+
+        return x, y
+
     # Every frame, move the Player icon to the mouse position
     # Limits the x- and y-coordinates to the game area of the window
     def update(self, x, y):
@@ -41,16 +53,9 @@ class Player():
                 self.state = Player.PLAYABLE_STATE
 
         # normalize location on display
-        if x < 0:
-            x = 0
-        elif x > self.maxX:
-            x = self.maxX
-        elif y < 0:
-            y = 0
-        elif y > self.maxY:
-            y = self.maxY
+        playerX, playerY = self.normalizeLocationOnDisplay(x, y)
 
-        self.image.setLoc((x, y))
+        self.image.setLoc((playerX, playerY))
         return self.image.getRect()
     
     def draw(self):

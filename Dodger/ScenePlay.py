@@ -120,8 +120,17 @@ class ScenePlay(pyghelpers.Scene):
 
     def handleInputs(self, eventsList, keyPressedList):
         if self.playingState == STATE_PLAYING:
-            return  # ignore button events while playing
-        
+            # The player starts with a small number of bombs that
+            # can be detonated when the player is in a bind,
+            # eliminating all Baddies in close proximity around the Player icon.
+            # The count of bombs is decremented each time one is used, until it reaches zero.
+            for event in eventsList:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        mouseX, mouseY = pygame.mouse.get_pos()
+                        playerX, playerY = self.oPlayer.normalizeLocationOnDisplay(mouseX, mouseY)
+                        self.oBaddieMgr.destroyAllBaddiesWithinDetonationArea(playerX, playerY)
+
         for event in eventsList:
             if self.startButton.handleEvent(event):
                 self.reset()

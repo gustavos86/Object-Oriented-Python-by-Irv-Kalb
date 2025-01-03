@@ -3,6 +3,7 @@
 import pygame
 import pygwidgets
 import random
+import math
 from Constants import *
 
 class Baddie():
@@ -50,6 +51,21 @@ class Baddie():
         collidedWithPlayer = self.image.overlaps(playerRect)
         return collidedWithPlayer
 
+    def withinDetonationArea(self, playerX, playerY):
+        """
+        Returns True if the Baddie is
+        200 pixes or less distant to the player
+        """
+        x1, y1 = playerX, playerY
+        x2, y2 = self.image.getLoc()
+
+        dist = math.sqrt((x1-x2)**2 + (y1-y2)**2)
+
+        if dist <= 200:
+            return True
+        else:
+            return False
+
 
 # BaddieMgr class
 class BaddieMgr():
@@ -96,3 +112,8 @@ class BaddieMgr():
                 return True
 
         return False
+
+    def destroyAllBaddiesWithinDetonationArea(self, playerX, playerY):
+        for oBaddie in reversed(self.baddiesList):
+            if oBaddie.withinDetonationArea(playerX, playerY):
+                self.baddiesList.remove(oBaddie)

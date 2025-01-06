@@ -19,6 +19,8 @@ from Constants import *
 
 # 3 - Initialize the world
 pygame.init()
+pygame.display.set_caption("Dodger game by Gus")
+pygame.display.set_icon(pygame.image.load("images/player.png"))
 window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
 # 4 - Load assets: image(s), sounds,  etc.
